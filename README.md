@@ -2,7 +2,7 @@
 
 OS X Background Update Extractor automatically copies and optionally imports XProtect and Gatekeeper ConfigData packages into your Munki repo.
 
-OS X background security (XProtect and Gatekeeper) packages are not automatically distributed and installed on machines that use an internal Apple software update server. Some solutions have [already been found](https://managingosx.wordpress.com/2015/01/30/gatekeeper-configuration-data-and-xprotectplistconfigdata-and-munki-and-reposado-oh-my/) but OSXBUE takes a slightly different approach by extracting the latest XProtect and Gatekeeper ConfigData packages into a customisable location, and optionally imports them into Munki for you.
+OS X background security packages (XProtect and Gatekeeper) are not automatically distributed and installed on machines that use an internal Apple software update server. Some solutions have [already been found](https://managingosx.wordpress.com/2015/01/30/gatekeeper-configuration-data-and-xprotectplistconfigdata-and-munki-and-reposado-oh-my/) but OSXBUE takes a slightly different approach by extracting the latest XProtect and Gatekeeper ConfigData packages into a customisable location, and optionally imports them into Munki for you.
 
 ## Installation
 
@@ -14,7 +14,7 @@ sudo /path/to/script
 
 The script automatically installs itself into /usr/local/bin/, generates its own preference file into /Library/Preferences/; and creates and enables its own LaunchDaemon into /Library/LaunchAgents/, to automatically run the script every 15 minutes.
 
-Once you have run the script, there is no need to [manually run](#markdown-header-running-manually) again.
+Once you have run the script, there is no need to [manually run](#running-manually) again.
 
 ## Preferences
 
@@ -30,17 +30,17 @@ defaults write /Library/Preferences/com.github.morgrowe.osx-background-update-ex
 
 ### ExtractPath
 
-This preference allows you to change where the most up to date packages are copied to. Default is /tmp
+This preference allows you to change where the most up to date packages are copied to. Default is /tmp.
 
 ```
 defaults write /Library/Preferences/com.github.morgrowe.osx-background-update-extractor.plist ExtractPath "/path/to/folder"
 ```
 
-Note: Do not end your path with a forward slash as the script assumes it needs to be entered for you. For example: "path/to/folder" is good as opposed to "path/to/folder/" which is bad.
+Note: Do not end your path with a forward slash as the script assumes it needs to be entered for you. For example: "/path/to/folder" is good as opposed to "/path/to/folder/" which is bad.
 
 ### ImportIntoMunki
 
-This preference allows you to toggle the automatic importing of the packages into Munki. The default is false.
+This preference allows you to toggle the automatic importing of the XProtect and Gatekeeper ConfigData packages into Munki. The default is false.
 
 ```
 defaults write /Library/Preferences/com.github.morgrowe.osx-background-update-extractor.plist ImportIntoMunki -bool false
