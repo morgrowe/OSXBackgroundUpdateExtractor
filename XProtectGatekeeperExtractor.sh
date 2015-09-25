@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#		OS X Background Update Extractor | Version 1.0 | Last Updated 25/09/2015
+#		XProtectGatekeeperExtractor | Version 1.1 | Last Updated 25/09/2015
 #
 
 # Must be run by root
@@ -35,10 +35,10 @@ tee=/usr/bin/tee
 # Paths and information
 fileName=$($basename "$0")
 currentDir=$($dirname "$0")
-scriptName=osx-background-update-extractor
-prettyScriptName="OS X Background Update Extractor"
-scriptID=com.github.morgrowe.$scriptName
-version=1.0
+scriptName=xprotect-gatekeeper-extractor
+prettyScriptName="XProtect and Gatekeeper ConfigData Extractor"
+scriptID=com.ehcho.$scriptName
+version=1.1
 softwareUpdateRepo=/Library/Server/Software\ Update/Data/html
 extractedPackages=/tmp/$scriptID-pkgs
 log=/tmp/$scriptID-log.log

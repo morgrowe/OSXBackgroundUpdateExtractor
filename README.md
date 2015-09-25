@@ -1,12 +1,12 @@
-# OS X Background Update Extractor (OSXBUE)
+# XProtectGatekeeperExtractor
 
-OS X Background Update Extractor automatically copies and optionally imports XProtect and Gatekeeper ConfigData packages into your Munki repo.
+XProtectGatekeeperExtractor automatically copies and optionally imports XProtect and Gatekeeper ConfigData packages into your Munki repo.
 
-OS X background security packages (XProtect and Gatekeeper) are not automatically distributed and installed on machines that use an internal Apple software update server. Some solutions have [already been found](https://managingosx.wordpress.com/2015/01/30/gatekeeper-configuration-data-and-xprotectplistconfigdata-and-munki-and-reposado-oh-my/) but OSXBUE takes a slightly different approach by extracting the latest XProtect and Gatekeeper ConfigData packages into a customisable location, and optionally imports them into Munki for you.
+OS X background security packages (XProtect and Gatekeeper) are not automatically distributed and installed on machines that use an internal Apple software update server. Some solutions have [already been found](https://managingosx.wordpress.com/2015/01/30/gatekeeper-configuration-data-and-xprotectplistconfigdata-and-munki-and-reposado-oh-my/) but this script takes a slightly different approach by extracting the latest XProtect and Gatekeeper ConfigData packages into a customisable location, and optionally imports them into Munki for you.
 
 ## Download and Installation
 
-The latest stable version can be found within the [released section](https://github.com/morgrowe/OSXBackgroundUpdateExtractor/releases).
+The latest stable version can be found within the [released section](https://github.com/morgrowe/XProtectGatekeeperExtractor/releases).
 
 Download the script and run it as root:
 
@@ -27,7 +27,7 @@ This tool comes with its own preferences: CheckInterval, ExtractPath, ImportInto
 This preference allows you to change the frequency in which the LaunchDaemon runs. The default is every 15 minutes (900 seconds).
 
 ```
-defaults write /Library/Preferences/com.github.morgrowe.osx-background-update-extractor.plist CheckInterval -int 900
+defaults write /Library/Preferences/com.ehcho.xprotect-gatekeeper-extractor.plist CheckInterval -int 900
 ```
 
 ### ExtractPath
@@ -35,17 +35,17 @@ defaults write /Library/Preferences/com.github.morgrowe.osx-background-update-ex
 This preference allows you to change where the most up to date packages are copied to. Default is /tmp.
 
 ```
-defaults write /Library/Preferences/com.github.morgrowe.osx-background-update-extractor.plist ExtractPath "/path/to/folder"
+defaults write /Library/Preferences/com.ehcho.xprotect-gatekeeper-extractor.plist ExtractPath "/path/to/folder"
 ```
 
 Note: Do not end your path with a forward slash as the script assumes it needs to be entered for you. For example: "/path/to/folder" is good as opposed to "/path/to/folder/" which is bad.
 
 ### ImportIntoMunki
 
-This preference allows you to toggle the automatic importing of the XProtect and Gatekeeper ConfigData packages into Munki. The default is false.
+This preference allows you to toggle the automatic importing of the XProtect and Gatekeeper ConfigData packages into Munki. The default is true.
 
 ```
-defaults write /Library/Preferences/com.github.morgrowe.osx-background-update-extractor.plist ImportIntoMunki -bool false
+defaults write /Library/Preferences/com.ehcho.xprotect-gatekeeper-extractor.plist ImportIntoMunki -bool true
 ```
 
 ### LoggedLines
@@ -53,7 +53,7 @@ defaults write /Library/Preferences/com.github.morgrowe.osx-background-update-ex
 In an attempt to not fill up the log file in the likely hood the server doesn't get restarted in a few weeks, the log's lines are cut to 180 lines by default. This can be changed to any value greater than 1.
 
 ```
-defaults write /Library/Preferences/com.github.morgrowe.osx-background-update-extractor.plist ImportIntoMunki -int 180
+defaults write /Library/Preferences/com.ehcho.xprotect-gatekeeper-extractor.plist ImportIntoMunki -int 180
 ```
 
 ## Running manually
@@ -61,5 +61,5 @@ defaults write /Library/Preferences/com.github.morgrowe.osx-background-update-ex
 It is safe to run the script manually as long as it is run as root. The default locaton for the script is:
 
 ```
-/usr/local/bin/OSXBackgroundUpdateExtractor.sh
+/usr/local/bin/XProtectGatekeeperExtractor.sh
 ```
