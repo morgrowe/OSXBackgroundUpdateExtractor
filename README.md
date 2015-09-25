@@ -1,6 +1,8 @@
 # OS X Background Update Extractor (OSXBUE)
 
-OS X background security (XProtect and Gatekeeper) packages are not automatically distributed and installed on machines that use an internal Apple software update server. Some solutions have [already been found](https://managingosx.wordpress.com/2015/01/30/gatekeeper-configuration-data-and-xprotectplistconfigdata-and-munki-and-reposado-oh-my/) but OSXBUE takes a slightly different appraoch by extracting the latest XProtect and Gatekeeper ConfigData packages into a customisable location, and optionally imports them into Munki for you.
+OS X Background Update Extractor automatically copies and optionally imports XProtect and Gatekeeper ConfigData packages into your Munki repo.
+
+OS X background security (XProtect and Gatekeeper) packages are not automatically distributed and installed on machines that use an internal Apple software update server. Some solutions have [already been found](https://managingosx.wordpress.com/2015/01/30/gatekeeper-configuration-data-and-xprotectplistconfigdata-and-munki-and-reposado-oh-my/) but OSXBUE takes a slightly different approach by extracting the latest XProtect and Gatekeeper ConfigData packages into a customisable location, and optionally imports them into Munki for you.
 
 ## Installation
 
