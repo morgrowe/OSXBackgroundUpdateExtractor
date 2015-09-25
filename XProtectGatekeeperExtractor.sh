@@ -226,7 +226,7 @@ function funcFirstRun {
 		$defaults write "$preferencesPath" GatekeeperLatest -string ""
 		$defaults write "$preferencesPath" ExtractPath -string "$copyToPoint"
 		$defaults write "$preferencesPath" LoggedLines -int "$logLineLimit"
-		$defaults write "$preferencesPath" ImportIntoMunki -bool false
+		$defaults write "$preferencesPath" ImportIntoMunki -bool true
 
 
 	# Create LaunchDaemon that runs this script periodically
