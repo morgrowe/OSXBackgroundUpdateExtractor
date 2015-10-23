@@ -46,9 +46,10 @@ installLocation=/usr/local/bin
 plistName=$scriptID.plist
 launchDaemonPath=/Library/LaunchAgents/$plistName
 preferencesPath=/Library/Preferences/$plistName
+munkiimport=/usr/local/munki/munkiimport
 
 # Default settings
-checkInterval=40
+checkInterval=900
 copyToPoint=/tmp
 logLineLimit=180
 
@@ -229,6 +230,7 @@ function funcFirstRun {
 		$defaults write "$preferencesPath" ExtractPath -string "$copyToPoint"
 		$defaults write "$preferencesPath" LoggedLines -int "$logLineLimit"
 		$defaults write "$preferencesPath" ImportIntoMunki -bool true
+		$defaults write "$preferencesPath" MunkiRepoPath -string "auto"
 
 
 	# Create LaunchDaemon that runs this script periodically
@@ -300,15 +302,39 @@ function funcReadPreferences {
 
 function funcImportPackageIntoMunki {
 
-	# Path to munkiimport
-	munkiimport=/usr/local/munki/munkiimport
-
 	funcLog "Importing packages into Munki"
 
 	# If munkiimport exists, import the package
 		if [ -f "$munkiimport" ]; then
 
-			$munkiimport -n --subdirectory "$scriptName" "$1"
+			# Find out if the repo path has been configured
+				munkiRepoPathSet=$($defaults read "$preferencesPath" MunkiRepoPath)
+
+				# If it hasn't been configured, attempt to find repo-path for the user
+				if [ ! "$munkiRepoPathSet" == "auto" ]; then
+
+					funcLog "Muki Repo path appears to be set: $munkiRepoPathSet"
+
+					$munkiimport -n --subdirectory "$scriptName" --repo_path "$munkiRepoPathSet" "$1"
+
+				else
+
+					funcLog "Munki Repo path doesn't seem to be set ($munkiRepoPathSet). Attempting to find repo-path."
+
+					# Search all home directories for the the repo path
+					for Users in "/Users"/*; do	
+
+						if [ -f "${Users}"/Library/Preferences/com.googlecode.munki.munkiimport.plist ]; then
+
+							autoRepoPath=$($defaults read "${Users}"/Library/Preferences/com.googlecode.munki.munkiimport.plist repo_path)
+
+						fi
+
+					done
+
+					$munkiimport -n --subdirectory "$scriptName" --repo_path "$autoRepoPath" "$1"
+
+				fi
 
 		fi
 
