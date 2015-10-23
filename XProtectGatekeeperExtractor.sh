@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#		XProtectGatekeeperExtractor | Version 1.1 | Last Updated 25/09/2015
+#		XProtectGatekeeperExtractor | Version 1.2 | Last Updated 22/10/2015
 #
 
 # Must be run by root
@@ -38,7 +38,7 @@ currentDir=$($dirname "$0")
 scriptName=xprotect-gatekeeper-extractor
 prettyScriptName="XProtect and Gatekeeper ConfigData Extractor"
 scriptID=com.ehcho.$scriptName
-version=1.1
+version=1.2
 softwareUpdateRepo=/Library/Server/Software\ Update/Data/html
 extractedPackages=/tmp/$scriptID-pkgs
 log=/tmp/$scriptID-log.log
@@ -48,7 +48,7 @@ launchDaemonPath=/Library/LaunchAgents/$plistName
 preferencesPath=/Library/Preferences/$plistName
 
 # Default settings
-checkInterval=900
+checkInterval=40
 copyToPoint=/tmp
 logLineLimit=180
 
@@ -220,6 +220,8 @@ function funcFirstRun {
 
 
 	# Create preferences file
+		funcLog "Writing default preferences to $preferencesPath"
+
 		$defaults write "$preferencesPath" Version "$version"
 		$defaults write "$preferencesPath" CheckInterval "$checkInterval"
 		$defaults write "$preferencesPath" XProtectLatest -string ""
@@ -232,13 +234,18 @@ function funcFirstRun {
 	# Create LaunchDaemon that runs this script periodically
 		if [ ! -f "$launchDaemonPath" ]; then
 
+			funcLog "Writing LaunchAgent to $launchDaemonPath"
+
 			$defaults write "$launchDaemonPath" Label "$scriptID"
 			$defaults write "$launchDaemonPath" ProgramArguments -array
 			$defaults write "$launchDaemonPath" ProgramArguments -array-add "$installLocation/$fileName"
 			$defaults write "$launchDaemonPath" StartInterval -int "$checkInterval"
 
-			$chmod 644 "$launchDaemonPath"
+			funcLog "Configuring permissions"
+			# Doesn't seem to be working?
+			$chmod 644 $launchDaemonPath
 
+			funcLog "Loading the daemon: $launchDaemonPath"
 			$launchctl load -w "$launchDaemonPath"
 
 		fi
