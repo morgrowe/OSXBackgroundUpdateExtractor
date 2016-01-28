@@ -14,6 +14,7 @@ fi
 # Tools
 basename=/usr/bin/basename
 cat=/bin/cat
+chown=/usr/sbin/chown
 chmod=/bin/chmod
 cp=/bin/cp
 date=/bin/date
@@ -47,6 +48,7 @@ plistName=$scriptID.plist
 launchDaemonPath=/Library/LaunchAgents/$plistName
 preferencesPath=/Library/Preferences/$plistName
 munkiimport=/usr/local/munki/munkiimport
+localAdminUser="ladmin"
 
 # Default settings
 checkInterval=900
@@ -231,6 +233,7 @@ function funcFirstRun {
 		$defaults write "$preferencesPath" LoggedLines -int "$logLineLimit"
 		$defaults write "$preferencesPath" ImportIntoMunki -bool true
 		$defaults write "$preferencesPath" MunkiRepoPath -string "auto"
+		$defaults write "$preferencesPath" LocalAdminName -string "$localAdminUser"
 
 
 	# Create LaunchDaemon that runs this script periodically
@@ -243,11 +246,10 @@ function funcFirstRun {
 			$defaults write "$launchDaemonPath" ProgramArguments -array-add "$installLocation/$fileName"
 			$defaults write "$launchDaemonPath" StartInterval -int "$checkInterval"
 
-			funcLog "Configuring permissions"
+			funcLog "Configuring $launchDaemonPath"
 			# Doesn't seem to be working?
-			$chmod 644 $launchDaemonPath
+			$chmod 644 "$launchDaemonPath"
 
-			funcLog "Loading the daemon: $launchDaemonPath"
 			$launchctl load -w "$launchDaemonPath"
 
 		fi
@@ -310,12 +312,27 @@ function funcImportPackageIntoMunki {
 			# Find out if the repo path has been configured
 				munkiRepoPathSet=$($defaults read "$preferencesPath" MunkiRepoPath)
 
+			# Get local admin name
+				getLocalAccountName=$($defaults read "$preferencesPath" LocalAdminName)
+
 				# If it hasn't been configured, attempt to find repo-path for the user
 				if [ ! "$munkiRepoPathSet" == "auto" ]; then
 
 					funcLog "Muki Repo path appears to be set: $munkiRepoPathSet"
 
-					$munkiimport -n --subdirectory "$scriptName" --repo_path "$munkiRepoPathSet" "$1"
+					$munkiimport -n --subdirectory "$scriptName" --repo_path "$munkiRepoPathSet" "$1"	
+					
+					$chmod 755 "$munkiRepoPathSet/pkgs/$scriptName"
+					$chown "$getLocalAccountName" "$munkiRepoPathSet/pkgsinfo/$scriptName"
+
+					$chmod 755 "$munkiRepoPathSet/pkgsinfo/$scriptName"
+					$chown "$getLocalAccountName" "$munkiRepoPathSet/pkgsinfo/$scriptName"
+
+					$chmod -R 644 "$munkiRepoPathSet/pkgs/$scriptName/"*
+					$chown "$getLocalAccountName" "$munkiRepoPathSet/pkgs/$scriptName/"*
+
+					$chmod -R 644 "$munkiRepoPathSet/pkgsinfo/$scriptName/"*
+					$chown "$getLocalAccountName" "$munkiRepoPathSet/pkgsinfo/$scriptName/"*
 
 				else
 
@@ -333,6 +350,18 @@ function funcImportPackageIntoMunki {
 					done
 
 					$munkiimport -n --subdirectory "$scriptName" --repo_path "$autoRepoPath" "$1"
+
+					$chmod 755 "$autoRepoPath/pkgs/$scriptName"
+					$chown "$getLocalAccountName" "$autoRepoPath/pkgs/$scriptName"
+
+					$chmod 755 "$autoRepoPath/pkgsinfo/$scriptName"
+					$chown "$getLocalAccountName" "$autoRepoPath/pkgsinfo/$scriptName"
+
+					$chmod -R 644 "$autoRepoPath/pkgs/$scriptName/"*
+					$chown "$getLocalAccountName" "$autoRepoPath/pkgs/$scriptName/"*
+
+					$chmod -R 644 "$autoRepoPath/pkgsinfo/$scriptName/"*
+					$chown "$getLocalAccountName" "$autoRepoPath/pkgsinfo/$scriptName/"*
 
 				fi
 
