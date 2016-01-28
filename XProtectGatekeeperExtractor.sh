@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#		XProtectGatekeeperExtractor | Version 1.2 | Last Updated 22/10/2015
+#		XProtectGatekeeperExtractor | Version 1.3.1 | Last Updated 28/01/2016
 #
 
 # Must be run by root
@@ -45,7 +45,7 @@ extractedPackages=/tmp/$scriptID-pkgs
 log=/tmp/$scriptID-log.log
 installLocation=/usr/local/bin
 plistName=$scriptID.plist
-launchDaemonPath=/Library/LaunchAgents/$plistName
+launchDaemonPath=/Library/LaunchDaemons/$plistName
 preferencesPath=/Library/Preferences/$plistName
 munkiimport=/usr/local/munki/munkiimport
 localAdminUser="ladmin"
@@ -239,7 +239,7 @@ function funcFirstRun {
 	# Create LaunchDaemon that runs this script periodically
 		if [ ! -f "$launchDaemonPath" ]; then
 
-			funcLog "Writing LaunchAgent to $launchDaemonPath"
+			funcLog "Writing LaunchDaemon to $launchDaemonPath"
 
 			$defaults write "$launchDaemonPath" Label "$scriptID"
 			$defaults write "$launchDaemonPath" ProgramArguments -array
@@ -271,6 +271,8 @@ function funcReadPreferences {
 
 							# Modify the interval
 								$defaults write "$launchDaemonPath" StartInterval -int "$readCheckInterval"
+
+								$chmod 644 "$launchDaemonPath"
 
 						fi
 

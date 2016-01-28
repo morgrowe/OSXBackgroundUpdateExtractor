@@ -14,7 +14,7 @@ Download the script and run it as root:
 sudo /path/to/script
 ```
 
-The script automatically installs itself into /usr/local/bin/, generates its own preference file into /Library/Preferences/; and creates and enables its own launchd job into /Library/LaunchAgents/, to automatically run the script every 15 minutes.
+The script automatically installs itself into /usr/local/bin/, generates its own preference file into /Library/Preferences/; and creates and enables its own launchd job into /Library/LaunchDaemons/, to automatically run the script every 15 minutes.
 
 Once you have run the script, there is no need to [manually run](#running-manually) again.
 
@@ -65,6 +65,14 @@ In an attempt to not fill up the log file in the likely hood the server doesn't 
 
 ```
 defaults write /Library/Preferences/com.ehcho.xprotect-gatekeeper-extractor.plist ImportIntoMunki -int 180
+```
+
+### LocalAdminName
+
+As this script runs as root, when packages are imported into Munki, they'll be owned by root. You can specify an alternate owner for these new files using this key. Default is 'ladmin'.
+
+```
+defaults write /Library/Preferences/com.ehcho.xprotect-gatekeeper-extractor.plist LocalAdminName -string "ladmin"
 ```
 
 ## Running manually
